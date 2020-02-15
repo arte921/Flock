@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Flock</string>
+    <string name="birds">Vogels: </string>
+    <string name="canvasContentDescription">2d bird flocking simulation</string>
 </resources>
