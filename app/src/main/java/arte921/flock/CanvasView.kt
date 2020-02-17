@@ -1,13 +1,16 @@
 package arte921.flock
 
 import android.content.Context
-import android.graphics.*
-import android.util.Log
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Path
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import java.lang.Math.PI
-import java.lang.Math.random
+import java.lang.Math.tan
 import java.util.*
+import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -54,7 +57,7 @@ class CanvasView(context: Context): View(context) {
             nearbyBoids.clear()
 
             boids.forEach {
-                if(currentBoid.getDistance(it.x,it.y) < currentBoid.viewRadius && it !== currentBoid){
+                if(currentBoid.getRawDistance(it.x,it.y) < currentBoid.viewRadius && it !== currentBoid){
                     nearbyBoids.add(it)
                 }
             }
@@ -62,13 +65,20 @@ class CanvasView(context: Context): View(context) {
             if(nearbyBoids.size > 0){
                 nearbyBoids.forEach {
                     currentBoid.dspeed += it.speed
-                    currentBoid.dangle += it.angle * 1/3
+                    currentBoid.dangle += it.angle
 
+                    currentBoid.navx += it.x
+                    currentBoid.navy += it.y
 
 
                 }
+
+                currentBoid.navx = currentBoid.navx / nearbyBoids.size
+                currentBoid.navy = currentBoid.navy / nearbyBoids.size
+
                 currentBoid.tspeed = currentBoid.dspeed / nearbyBoids.size
-                currentBoid.tangle = currentBoid.dangle / nearbyBoids.size % PI
+                currentBoid.tangle = (currentBoid.dangle / nearbyBoids.size + currentBoid.calcSepAngle() + 0) / 2 % PI
+
             }
 
             currentBoid.tx = currentBoid.x + deltaT / 1000 * currentBoid.speed * cos(currentBoid.angle)
@@ -84,7 +94,7 @@ class CanvasView(context: Context): View(context) {
             currentBoid.apply()
             currentBoid.log()
 
-            canvas.drawPoint(currentBoid.x.toFloat(),currentBoid.y.toFloat(),paint)
+            canvas.drawPoint((currentBoid.x % maxX).toFloat(),(currentBoid.y % maxY).toFloat(),paint)
             canvas.drawPoint(10.0F, 10F,paint)
 
         }
