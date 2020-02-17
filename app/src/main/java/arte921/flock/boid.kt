@@ -13,48 +13,22 @@ class boid(maxX: Double, maxY: Double) {
     var angle: Double = random() * 2 * PI
     var speed: Double = 500*random()
     var acceleration: Double = 0.0
-    var viewRadius: Double = 1000.0
+    var viewRadius: Double = 50.0
     var dspeed: Double = 0.0
     var dangle: Double = 0.0
     var maxx: Double = maxX
     var maxy: Double = maxY
-
     var tx: Double = 0.0
     var ty: Double = 0.0
     var tangle: Double = 0.0
     var tspeed: Double = 0.0
-
     var navx: Double = 0.0
     var navy: Double = 0.0
-
     var dnavx: Double = 0.0
     var dnavy: Double = 0.0
-
     var tanglec: Double = 0.0
+    var coanglet: Double = 0.0
 
-    var istp: Boolean
-
-    init {
-        //this.x = random() * maxX
-        /*
-        this.y = random() * maxY
-        this.angle = random() * 2 * PI
-        this.speed = 500*random()
-        this.acceleration = 0.0
-        this.viewRadius = 1000.0
-        this.dspeed = 0.0
-        this.dangle = 0.0
-
-        this.tx = 0.0
-        this.ty = 0.0
-        this.tangle = 0.0
-        this.tspeed = 0.0*/
-
-        this.navx = 0.0
-        this.navy = 0.0
-
-        this.istp = false
-    }
 
     fun getRawDistance(x: Double, y: Double): Double {
         return sqrt((x-this.x).pow(2) + (y-this.y).pow(2))
@@ -77,17 +51,31 @@ class boid(maxX: Double, maxY: Double) {
         this.speed = this.tspeed
     }
 
-    fun calcSepAngle (): Double {
+    fun calcCoAngle (): Double {
         this.dnavx = this.navx - this.x
         this.dnavy = this.navy - this.y
 
         if(dnavx * dnavy > 0.0){
-            return(atan(dnavx/dnavy))
+            this.coanglet = atan(dnavx/dnavy)
         }else if(dnavy !== 0.0){
-            return(2 * PI - atan(dnavx/dnavy))
+            this.coanglet = 2 * PI - atan(dnavx/dnavy)
         }else{
-            return 0.0
+            0.0
         }
+
+        if(this.getRawDistance(this.dnavx,dnavy) < this.viewRadius / 10){
+
+        }
+
+        this.coanglet = this.coanglet - 0.2 * PI + getRawDistance(navx,navy)/this.viewRadius * PI * 0.4
+        return this.coanglet
+    }
+
+    fun calcSepAngle (): Double {
+        if(this.getRawDistance(this.dnavx,dnavy) < this.viewRadius / 10){
+
+        }
+        return 0.0
     }
 
     fun log(){

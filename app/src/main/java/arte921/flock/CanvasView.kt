@@ -26,7 +26,7 @@ class CanvasView(context: Context): View(context) {
     private var maxX: Double = 720.0
     private var maxY: Double = 1280.0
     private var nearbyBoids = mutableListOf<boid>()
-    private var boids = MutableList(20) { boid(maxX, maxY) }
+    private var boids = MutableList(50) { boid(maxX, maxY) }
 
 
     private val paint = Paint().apply {
@@ -77,7 +77,7 @@ class CanvasView(context: Context): View(context) {
                 currentBoid.navy = currentBoid.navy / nearbyBoids.size
 
                 currentBoid.tspeed = currentBoid.dspeed / nearbyBoids.size
-                currentBoid.tangle = (currentBoid.dangle / nearbyBoids.size + currentBoid.calcSepAngle() + 0) / 2 % PI
+                currentBoid.tangle = (currentBoid.dangle / nearbyBoids.size + currentBoid.calcCoAngle() + currentBoid.calcSepAngle()) / 2 % PI
 
             }
 
