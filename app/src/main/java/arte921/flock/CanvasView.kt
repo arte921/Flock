@@ -9,6 +9,7 @@ import java.lang.Math.PI
 import java.lang.Math.random
 import java.util.*
 import kotlin.math.cos
+import kotlin.math.sin
 
 
 class CanvasView(context: Context): View(context) {
@@ -17,12 +18,15 @@ class CanvasView(context: Context): View(context) {
     private val skyColor = ResourcesCompat.getColor(resources,R.color.sky,null)
     private val birdColor = ResourcesCompat.getColor(resources,R.color.bird,null)
     private val sw = 12f
-    private var go: Long = 0
-    private var deltaT: Long = 0
-    private var boids = MutableList(20) { boid() }
+    private var go: Double = Calendar.getInstance().timeInMillis.toDouble()
+    private var deltaT: Double = 1.0
+    private var maxX: Double = 700.0
+    private var maxY: Double = 700.0
     private lateinit var currentBoid: boid
     private var nearbyBoids = mutableListOf<boid>()
     private var adjustedAngle: Double = 0.0
+    private var boids = MutableList(20) { boid(maxX, maxY) }
+
 
     private val paint = Paint().apply {
         color = birdColor
@@ -48,8 +52,7 @@ class CanvasView(context: Context): View(context) {
         super.onDraw(canvas)
         canvas.drawBitmap(extraBitmap, 0f, 0f, null)
 
-        boids.forEach {
-            currentBoid = it
+        boids.forEach {currentBoid ->
             nearbyBoids.clear()
 
             boids.forEach {
@@ -79,8 +82,13 @@ class CanvasView(context: Context): View(context) {
                 }
             }
 
-            currentBoid.x = currentBoid.x + deltaT * currentBoid * cos()
+            currentBoid.x = currentBoid.x + deltaT / 1000 * currentBoid.speed * cos(currentBoid.angle)
+            currentBoid.y = currentBoid.y + deltaT / 1000 * currentBoid.speed * sin(currentBoid.angle)
 
+            if(currentBoid.x > maxX) currentBoid.x = 0.0
+            if(currentBoid.x < 0) currentBoid.x = maxX
+            if(currentBoid.y > maxY) currentBoid.y = 0.0
+            if(currentBoid.y < 0) currentBoid.y = maxY
 
 
             currentBoid.reset()
@@ -88,13 +96,14 @@ class CanvasView(context: Context): View(context) {
             currentBoid.log()
 
             canvas.drawPoint(currentBoid.x.toFloat(),currentBoid.y.toFloat(),paint)
+            canvas.drawPoint(10.0F, 10F,paint)
 
         }
 
 
 
         deltaT = Calendar.getInstance().timeInMillis - go
-        go = Calendar.getInstance().timeInMillis
-        //invalidate()
+        go = Calendar.getInstance().timeInMillis.toDouble()
+        invalidate()
     }
 }
