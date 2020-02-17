@@ -20,11 +20,9 @@ class CanvasView(context: Context): View(context) {
     private val sw = 12f
     private var go: Double = Calendar.getInstance().timeInMillis.toDouble()
     private var deltaT: Double = 1.0
-    private var maxX: Double = 700.0
-    private var maxY: Double = 700.0
-    private lateinit var currentBoid: boid
+    private var maxX: Double = 720.0
+    private var maxY: Double = 1280.0
     private var nearbyBoids = mutableListOf<boid>()
-    private var adjustedAngle: Double = 0.0
     private var boids = MutableList(20) { boid(maxX, maxY) }
 
 
@@ -64,22 +62,20 @@ class CanvasView(context: Context): View(context) {
             if(nearbyBoids.size > 0){
                 nearbyBoids.forEach {
                     currentBoid.dspeed += it.speed
+                    /*
                     adjustedAngle = it.angle - currentBoid.angle
-                    if(adjustedAngle<0) adjustedAngle = 2 * PI - adjustedAngle
-
-                    if(it.angle > PI){
-                        currentBoid.dangle += it.angle - 2 * PI
-                    }else{
-                        currentBoid.dangle += it.angle
-                    }
+                    if(adjustedAngle<0) adjustedAngle += 2 * PI
+*/
+                    currentBoid.dangle += it.angle
                 }
-
-                currentBoid.speed = currentBoid.dspeed / nearbyBoids.size
+                currentBoid.tspeed = currentBoid.dspeed / nearbyBoids.size
+                currentBoid.tangle = currentBoid.dangle / nearbyBoids.size % PI
+/*
                 if(currentBoid.dangle < 0){
                     currentBoid.angle = 2 * PI - currentBoid.dangle
                 }else{
                     currentBoid.angle = currentBoid.dangle
-                }
+                }*/
             }
 
             currentBoid.x = currentBoid.x + deltaT / 1000 * currentBoid.speed * cos(currentBoid.angle)

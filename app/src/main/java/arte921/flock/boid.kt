@@ -22,9 +22,9 @@ class boid(maxX: Double, maxY: Double) {
         this.x = random() * maxX
         this.y = random() * maxY
         this.angle = random() * 2 * PI
-        this.speed = 100.0
+        this.speed = 1000.0
         this.acceleration = 0.0
-        this.viewRadius = 10000.0
+        this.viewRadius = 100.0
         this.dspeed = 0.0
         this.dangle = this.angle
     }
