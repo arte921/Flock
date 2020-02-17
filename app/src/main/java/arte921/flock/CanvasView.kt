@@ -17,6 +17,7 @@ class CanvasView(context: Context): View(context) {
     private lateinit var frame: Rect
     private var go: Long = 0
     private var deltaT: Long = 0
+    private var boids = MutableList(20) { boid() }
 
 
     private val paint = Paint().apply {
@@ -37,16 +38,23 @@ class CanvasView(context: Context): View(context) {
         extraBitmap = Bitmap.createBitmap(width,height,Bitmap.Config.ARGB_8888)
         extraCanvas = Canvas(extraBitmap)
         extraCanvas.drawColor(skyColor)
-
-        var boids = MutableList(20) { boid() }
-
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         canvas.drawBitmap(extraBitmap, 0f, 0f, null)
 
+        boids.forEach {
 
+
+            boids.forEach {
+
+
+
+            }
+
+
+        }
 
 
         deltaT = Calendar.getInstance().timeInMillis - go
