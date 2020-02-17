@@ -62,33 +62,26 @@ class CanvasView(context: Context): View(context) {
             if(nearbyBoids.size > 0){
                 nearbyBoids.forEach {
                     currentBoid.dspeed += it.speed
-                    /*
-                    adjustedAngle = it.angle - currentBoid.angle
-                    if(adjustedAngle<0) adjustedAngle += 2 * PI
-*/
-                    currentBoid.dangle += it.angle
+                    currentBoid.dangle += it.angle * 1/3
+
+
+
                 }
                 currentBoid.tspeed = currentBoid.dspeed / nearbyBoids.size
                 currentBoid.tangle = currentBoid.dangle / nearbyBoids.size % PI
-/*
-                if(currentBoid.dangle < 0){
-                    currentBoid.angle = 2 * PI - currentBoid.dangle
-                }else{
-                    currentBoid.angle = currentBoid.dangle
-                }*/
             }
 
-            currentBoid.x = currentBoid.x + deltaT / 1000 * currentBoid.speed * cos(currentBoid.angle)
-            currentBoid.y = currentBoid.y + deltaT / 1000 * currentBoid.speed * sin(currentBoid.angle)
+            currentBoid.tx = currentBoid.x + deltaT / 1000 * currentBoid.speed * cos(currentBoid.angle)
+            currentBoid.ty = currentBoid.y + deltaT / 1000 * currentBoid.speed * sin(currentBoid.angle)
 
-            if(currentBoid.x > maxX) currentBoid.x = 0.0
-            if(currentBoid.x < 0) currentBoid.x = maxX
-            if(currentBoid.y > maxY) currentBoid.y = 0.0
-            if(currentBoid.y < 0) currentBoid.y = maxY
+            if(currentBoid.x > maxX) currentBoid.tx = 0.0
+            if(currentBoid.x < 0) currentBoid.tx = maxX
+            if(currentBoid.y > maxY) currentBoid.ty = 0.0
+            if(currentBoid.y < 0) currentBoid.ty = maxY
 
 
             currentBoid.reset()
-
+            currentBoid.apply()
             currentBoid.log()
 
             canvas.drawPoint(currentBoid.x.toFloat(),currentBoid.y.toFloat(),paint)
