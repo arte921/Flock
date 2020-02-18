@@ -7,8 +7,7 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
-import java.lang.Math.PI
-import java.lang.Math.tan
+import java.lang.Math.*
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.atan
@@ -27,11 +26,12 @@ class CanvasView(context: Context): View(context) {
     private var maxX: Double = 720.0
     private var maxY: Double = 1280.0
     private var nearbyBoids = mutableListOf<boid>()
-    private var boids = MutableList(100) { boid(maxX, maxY) }
+    private var boids = MutableList(50) { boid(maxX, maxY) }
     private var angletotalx: Double = 0.0
     private var angletotaly: Double = 0.0
     private var currentdistance: Double = 0.0
     private var navxangle: Double = 0.0
+    private var alignangle: Double = 0.0
 
     private val paint = Paint().apply {
         color = birdColor
@@ -99,17 +99,13 @@ class CanvasView(context: Context): View(context) {
                 }
 
                 navxangle = atan((currentBoid.navy/(currentBoid.attractionamount+currentBoid.repulsionamount)-currentBoid.y) / (currentBoid.navx/(currentBoid.attractionamount+currentBoid.repulsionamount)-currentBoid.x))
+                alignangle = atan(currentBoid.danglex/currentBoid.dangley)
 
 
-                currentBoid.dangle = atan((currentBoid.dangley)/currentBoid.danglex)
-
-                currentBoid.navx = currentBoid.navx / nearbyBoids.size
-                currentBoid.navy = currentBoid.navy / nearbyBoids.size
+                currentBoid.tangle =  atan(((sin(navxangle) + sin(alignangle)) * 2/3 )/((cos(navxangle) + cos(alignangle)) * 1/3 ))
 
                 currentBoid.tspeed = currentBoid.dspeed / nearbyBoids.size
                 currentBoid.initdeltas()
-                currentBoid.tangle =  currentBoid.calcDivAngle()  //currentBoid.calcDivAngle(),currentBoid.dangle,   avgangles(listOf()) * 0 +
-
             }
 
             currentBoid.tx = currentBoid.x + deltaT / 1000 * currentBoid.speed * cos(currentBoid.angle)
@@ -126,7 +122,7 @@ class CanvasView(context: Context): View(context) {
             currentBoid.log()
 
             canvas.drawPoint((currentBoid.x % maxX).toFloat(),(maxY - currentBoid.y % maxY).toFloat(),paint)
-            canvas.drawPoint(10.0F, 10F,paint)
+            canvas.drawPoint((10.0 + random()*10.0).toFloat(), 10F,paint)
 
         }
 

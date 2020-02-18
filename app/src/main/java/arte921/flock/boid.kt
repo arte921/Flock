@@ -10,7 +10,7 @@ class boid(maxX: Double, maxY: Double) {
     var angle: Double = random() * 2 * PI
     var speed: Double = 100.0
     var acceleration: Double = 0.0
-    var viewRadius: Double = 10000.0
+    var viewRadius: Double = 100.0
     var dspeed: Double = 0.0
     var dangle: Double = 0.0
     var maxx: Double = maxX
