@@ -2,18 +2,15 @@ package arte921.flock
 
 import android.util.Log
 import java.lang.Math.random
-import kotlin.math.PI
-import kotlin.math.atan
-import kotlin.math.pow
-import kotlin.math.sqrt
+import kotlin.math.*
 
 class boid(maxX: Double, maxY: Double) {
     var x: Double = random() * maxX
     var y: Double = random() * maxY
     var angle: Double = random() * 2 * PI
-    var speed: Double = 500*random()
+    var speed: Double = 100.0
     var acceleration: Double = 0.0
-    var viewRadius: Double = 50.0
+    var viewRadius: Double = 100.0
     var dspeed: Double = 0.0
     var dangle: Double = 0.0
     var maxx: Double = maxX
@@ -44,25 +41,19 @@ class boid(maxX: Double, maxY: Double) {
         return if(d !== null){d}else{viewRadius + 1}
     }
 
-    fun apply(){
-        this.x = this.tx
-        this.y = this.ty
-        this.angle = this.tangle
-        this.speed = this.tspeed
-    }
-
     fun calcCoAngle (): Double {
         this.dnavx = this.navx - this.x
         this.dnavy = this.navy - this.y
 
-        if(dnavx * dnavy > 0.0){
-            this.coanglet = atan(dnavx/dnavy)
-        }else if(dnavy !== 0.0){
+        if(this.dnavx > 0.0 && this.dnavy > 0.0){
+            this.coanglet = PI - atan(dnavx/dnavy)
+        }else if(this.dnavx < 0.0 && this.dnavy > 0.0){
+            this.coanglet = PI - atan(dnavx/dnavy)
+        }else if(this.dnavx > 0.0 && this.dnavy < 0.0){
+            this.coanglet = abs(atan(dnavx/dnavy))
+        }else if(this.dnavx < 0.0 && this.dnavy < 0.0){
             this.coanglet = 2 * PI - atan(dnavx/dnavy)
-        }else{
-            0.0
         }
-
         if(this.getRawDistance(this.dnavx,dnavy) < this.viewRadius / 10){
 
         }
@@ -80,6 +71,13 @@ class boid(maxX: Double, maxY: Double) {
 
     fun log(){
         Log.i("boid.log",this.x.toString() + "," +  this.x.toString() + ", Angle: " +  this.angle.toString() + ", Speed: " +  this.speed.toString())
+    }
+
+    fun apply(){
+        this.x = this.tx
+        this.y = this.ty
+        this.angle = this.tangle
+        this.speed = this.tspeed
     }
 
     fun reset(){
