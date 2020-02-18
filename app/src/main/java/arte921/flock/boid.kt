@@ -8,8 +8,8 @@ class boid(maxX: Double, maxY: Double) {
     var x: Double = random() * maxX
     var y: Double = random() * maxY
     var angle: Double = random() * 2 * PI
-    var speed: Double = 100.0
-    var viewRadius: Double = 200.0
+    var speed: Double = 100.0 * random()
+    var viewRadius: Double = 1000.0
     var dspeed: Double = 0.0
     var dangle: Double = 0.0
     var maxx: Double = maxX
@@ -43,7 +43,6 @@ class boid(maxX: Double, maxY: Double) {
             sqrt((maxx-x-this.x).pow(2) + (maxy-y-this.y).pow(2))).min()
         return if(d !== null){d}else{viewRadius + 1}
     }
-
 
     fun log(){
         Log.i("boid.log",this.x.toString() + "," +  this.x.toString() + ", Angle: " +  this.angle.toString() + ", Speed: " +  this.speed.toString())

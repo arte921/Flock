@@ -32,6 +32,7 @@ class CanvasView(context: Context): View(context) {
     private var currentdistance: Double = 0.0
     private var navxangle: Double = 0.0
     private var alignangle: Double = 0.0
+    private var angles = mutableListOf<Double>()
 
     private val paint = Paint().apply {
         color = birdColor
@@ -78,6 +79,7 @@ class CanvasView(context: Context): View(context) {
             }
 
             if(nearbyBoids.size > 0){
+                angles.clear()
                 nearbyBoids.forEach {
                     currentdistance = currentBoid.getRawDistance(it.x,it.y)
                     currentBoid.dspeed += it.speed
@@ -91,32 +93,36 @@ class CanvasView(context: Context): View(context) {
                         currentBoid.navy += 2 * currentBoid.y - it.y
                         currentBoid.repulsionamount++
                     }else{
-                        currentBoid.danglex += cos(it.angle)
-                        currentBoid.dangley += sin(it.angle)
+                        angles.add(it.angle)
+                        if(it.angle > PI){
+                            angles.add(it.angle - 2 * PI)
+                        }else{
+                            angles.add(it.angle)
+                        }
                         currentBoid.alignmentamount++
                     }
-
                 }
+
+
 
                 currentBoid.navx = currentBoid.navx/(currentBoid.attractionamount+currentBoid.repulsionamount)
                 currentBoid.navy = currentBoid.navy/(currentBoid.attractionamount+currentBoid.repulsionamount)
 
-                navxangle = atan((currentBoid.navy-currentBoid.y) / (currentBoid.navx-currentBoid.x))
-                alignangle = atan(currentBoid.dangley/currentBoid.danglex)
+                navxangle = (2 * PI + atan((currentBoid.navy-currentBoid.y) / (currentBoid.navx-currentBoid.x))) % (2 * PI)
+                if(navxangle > PI) navxangle -= 2 * PI
+                alignangle = angles.average()
 
-
-                currentBoid.tangle =  atan(((sin(navxangle) * (currentBoid.attractionamount + currentBoid.repulsionamount * currentBoid.alignmentamount) + sin(alignangle))) / ((cos(navxangle) * (currentBoid.attractionamount + currentBoid.repulsionamount) + cos(alignangle) * currentBoid.alignmentamount)))
-
+                currentBoid.tangle =  (2 * PI + navxangle * (currentBoid.attractionamount+currentBoid.repulsionamount) + alignangle * currentBoid.alignmentamount) % (2 * PI)
                 currentBoid.tspeed = currentBoid.dspeed / nearbyBoids.size
             }
 
             currentBoid.tx = currentBoid.x + deltaT / 1000 * currentBoid.speed * cos(currentBoid.angle)
             currentBoid.ty = currentBoid.y + deltaT / 1000 * currentBoid.speed * sin(currentBoid.angle)
 
-            if(currentBoid.tx >= maxX) currentBoid.tx = 0.0
-            if(currentBoid.tx <= 0) currentBoid.tx = maxX
-            if(currentBoid.ty >= maxY) currentBoid.ty = 0.0
-            if(currentBoid.ty <= 0) currentBoid.ty = maxY
+            if(currentBoid.x >= maxX) currentBoid.tx = 0.0
+            if(currentBoid.x <= 0) currentBoid.tx = maxX
+            if(currentBoid.y >= maxY) currentBoid.ty = 0.0
+            if(currentBoid.y <= 0) currentBoid.ty = maxY
 
         }
 
