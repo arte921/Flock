@@ -8,9 +8,9 @@ class boid(maxX: Double, maxY: Double) {
     var x: Double = random() * maxX
     var y: Double = random() * maxY
     var angle: Double = random() * 2 * PI
-    var speed: Double = random() * 100.0
+    var speed: Double = 100.0
     var acceleration: Double = 0.0
-    var viewRadius: Double = 100.0
+    var viewRadius: Double = 10000.0
     var dspeed: Double = 0.0
     var dangle: Double = 0.0
     var maxx: Double = maxX
@@ -70,8 +70,7 @@ class boid(maxX: Double, maxY: Double) {
     }
 
     fun calcDivAngle (): Double {
-        //closenessFactor = 1/this.getRawDistance(this.navx,this.navy).pow(2)
-        closenessFactor = if(this.getRawDistance(this.navx,this.navy)<10) 1.0 else 0.0
+
         /*
         if(this.dnavx > 0.0 && this.dnavy > 0.0){
             prediv = this.dangle
@@ -84,7 +83,11 @@ class boid(maxX: Double, maxY: Double) {
         }*/
 
         adangle = 2 * PI + this.dangle - this.angle % (2 * PI)
-        return if(adangle > PI) this.angle + closenessFactor * 0.5 * PI else (2 * PI + this.angle - closenessFactor * 0.5 * PI) % (2 * PI)
+        if(this.getRawDistance(this.navx,this.navy) < 50){
+            return if(adangle > PI) this.angle + closenessFactor * 0.5 * PI else (2 * PI + this.angle - closenessFactor * 0.5 * PI) % (2 * PI)
+        }else{
+            return this.angle
+        }
 
         prediv = this.dangle + 0.5 * PI * closenessFactor
         //return prediv
