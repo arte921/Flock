@@ -92,7 +92,8 @@ class CanvasView(context: Context): View(context) {
                 currentBoid.navy = currentBoid.navy / nearbyBoids.size
 
                 currentBoid.tspeed = currentBoid.dspeed / nearbyBoids.size
-                currentBoid.tangle = currentBoid.avgangles(listOf(currentBoid.calcSepAngle()))    //currentBoid.dangle,currentBoid.calcCoAngle()
+                currentBoid.initdeltas()
+                currentBoid.tangle = avgangles(listOf(currentBoid.calcDivAngle()))   //currentBoid.dangle,currentBoid.calcCoAngle()
 
             }
 
@@ -109,7 +110,7 @@ class CanvasView(context: Context): View(context) {
             currentBoid.apply()
             currentBoid.log()
 
-            canvas.drawPoint((currentBoid.x % maxX).toFloat(),(currentBoid.y % maxY).toFloat(),paint)
+            canvas.drawPoint((currentBoid.x % maxX).toFloat(),(maxY - currentBoid.y % maxY).toFloat(),paint)
             canvas.drawPoint(10.0F, 10F,paint)
 
         }

@@ -8,9 +8,9 @@ class boid(maxX: Double, maxY: Double) {
     var x: Double = random() * maxX
     var y: Double = random() * maxY
     var angle: Double = random() * 2 * PI
-    var speed: Double = 100.0
+    var speed: Double = random() * 100.0
     var acceleration: Double = 0.0
-    var viewRadius: Double = 50.0
+    var viewRadius: Double = 100.0
     var dspeed: Double = 0.0
     var dangle: Double = 0.0
     var maxx: Double = maxX
@@ -27,9 +27,9 @@ class boid(maxX: Double, maxY: Double) {
     var coanglet: Double = 0.0
     var danglex: Double = 0.0
     var dangley: Double = 0.0
-    var angletotalx: Double = 0.0
-    var angletotaly: Double = 0.0
-
+    var prediv: Double = 0.0
+    var closenessFactor: Double = 0.0
+    var adangle: Double = 0.0
 
 
     fun getRawDistance(x: Double, y: Double): Double {
@@ -46,10 +46,12 @@ class boid(maxX: Double, maxY: Double) {
         return if(d !== null){d}else{viewRadius + 1}
     }
 
-    fun calcCoAngle (): Double {
+    fun initdeltas() {
         this.dnavx = this.navx - this.x
         this.dnavy = this.navy - this.y
+    }
 
+    fun calcCoAngle (): Double {
         if(this.dnavx > 0.0 && this.dnavy > 0.0){
             this.coanglet = PI - atan(dnavx/dnavy)
         }else if(this.dnavx < 0.0 && this.dnavy > 0.0){
@@ -67,19 +69,25 @@ class boid(maxX: Double, maxY: Double) {
         return this.coanglet
     }
 
-    fun avgangles(inputs: List<Double>): Double{
-        angletotalx = 0.0
-        angletotaly = 0.0
-        inputs.forEach {
-            angletotalx += cos(it)
-            angletotaly += sin(it)
-        }
+    fun calcDivAngle (): Double {
+        //closenessFactor = 1/this.getRawDistance(this.navx,this.navy).pow(2)
+        closenessFactor = if(this.getRawDistance(this.navx,this.navy)<10) 1.0 else 0.0
+        /*
+        if(this.dnavx > 0.0 && this.dnavy > 0.0){
+            prediv = this.dangle
+        }else if(this.dnavx < 0.0 && this.dnavy > 0.0){
+            this.coanglet = PI - atan(dnavx/dnavy)
+        }else if(this.dnavx > 0.0 && this.dnavy < 0.0){
+            this.coanglet = abs(atan(dnavx/dnavy))
+        }else if(this.dnavx < 0.0 && this.dnavy < 0.0){
+            this.coanglet = 2 * PI - atan(dnavx/dnavy)
+        }*/
 
-        return((2* Math.PI + atan(angletotaly/angletotalx)) % (2 * Math.PI))
-    }
+        adangle = 2 * PI + this.dangle - this.angle % (2 * PI)
+        return if(adangle > PI) this.angle + closenessFactor * 0.5 * PI else (2 * PI + this.angle - closenessFactor * 0.5 * PI) % (2 * PI)
 
-    fun calcSepAngle (): Double {
-
+        prediv = this.dangle + 0.5 * PI * closenessFactor
+        //return prediv
     }
 
     fun log(){
