@@ -30,7 +30,8 @@ class CanvasView(context: Context): View(context) {
     private var boids = MutableList(100) { boid(maxX, maxY) }
     private var angletotalx: Double = 0.0
     private var angletotaly: Double = 0.0
-
+    private var currentdistance: Double = 0.0
+    private var navxangle: Double = 0.0
 
     private val paint = Paint().apply {
         color = birdColor
@@ -78,15 +79,29 @@ class CanvasView(context: Context): View(context) {
 
             if(nearbyBoids.size > 0){
                 nearbyBoids.forEach {
+                    currentdistance = currentBoid.getDistance(it.x,it.y)
                     currentBoid.dspeed += it.speed
-                    currentBoid.danglex += cos(it.angle)
-                    currentBoid.dangley += sin(it.angle)
 
-                    currentBoid.navx += it.x
-                    currentBoid.navy += it.y
+                    if(currentdistance > 100){
+                        currentBoid.navx += it.x
+                        currentBoid.navy += it.y
+                        currentBoid.attractionamount++
+                    }else if(currentdistance < 30){
+                        currentBoid.navx += 2 * currentBoid.x - it.x
+                        currentBoid.navy += 2 * currentBoid.y - it.y
+                        currentBoid.repulsionamount++
+                    }else{
+                        currentBoid.danglex += cos(it.angle)
+                        currentBoid.dangley += sin(it.angle)
+                        currentBoid.alignmentamount++
+                    }
 
                 }
-                currentBoid.dangle = atan(currentBoid.dangley/currentBoid.danglex)
+
+                navxangle = atan((currentBoid.navy/(currentBoid.attractionamount+currentBoid.repulsionamount)-currentBoid.y) / (currentBoid.navx/(currentBoid.attractionamount+currentBoid.repulsionamount)-currentBoid.x))
+
+
+                currentBoid.dangle = atan((currentBoid.dangley)/currentBoid.danglex)
 
                 currentBoid.navx = currentBoid.navx / nearbyBoids.size
                 currentBoid.navy = currentBoid.navy / nearbyBoids.size

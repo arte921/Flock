@@ -30,6 +30,9 @@ class boid(maxX: Double, maxY: Double) {
     var prediv: Double = 0.0
     var closenessFactor: Double = 0.0
     var adangle: Double = 0.0
+    var repulsionamount: Int = 0
+    var alignmentamount: Int = 0
+    var attractionamount: Int = 0
 
 
     fun getRawDistance(x: Double, y: Double): Double {
@@ -70,27 +73,21 @@ class boid(maxX: Double, maxY: Double) {
     }
 
     fun calcDivAngle (): Double {
-
-        /*
         if(this.dnavx > 0.0 && this.dnavy > 0.0){
-            prediv = this.dangle
+            this.coanglet = PI - atan(dnavx/dnavy)
         }else if(this.dnavx < 0.0 && this.dnavy > 0.0){
             this.coanglet = PI - atan(dnavx/dnavy)
         }else if(this.dnavx > 0.0 && this.dnavy < 0.0){
             this.coanglet = abs(atan(dnavx/dnavy))
         }else if(this.dnavx < 0.0 && this.dnavy < 0.0){
             this.coanglet = 2 * PI - atan(dnavx/dnavy)
-        }*/
+        }
+        if(this.getRawDistance(this.dnavx,dnavy) < this.viewRadius / 10){
 
-        adangle = 2 * PI + this.dangle - this.angle % (2 * PI)
-        if(this.getRawDistance(this.navx,this.navy) < 50){
-            return if(adangle > PI) this.angle + closenessFactor * 0.5 * PI else (2 * PI + this.angle - closenessFactor * 0.5 * PI) % (2 * PI)
-        }else{
-            return this.angle
         }
 
-        prediv = this.dangle + 0.5 * PI * closenessFactor
-        //return prediv
+        this.coanglet = this.coanglet - 0.2 * PI + getRawDistance(navx,navy)/this.viewRadius * PI * 0.4
+        return this.coanglet
     }
 
     fun log(){
@@ -114,5 +111,8 @@ class boid(maxX: Double, maxY: Double) {
         this.tanglec = 0.0
         this.danglex = 0.0
         this.dangley = 0.0
+        this.repulsionamount = 0
+        this.alignmentamount = 0
+        this.attractionamount = 0
     }
 }
