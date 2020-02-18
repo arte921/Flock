@@ -10,7 +10,7 @@ class boid(maxX: Double, maxY: Double) {
     var angle: Double = random() * 2 * PI
     var speed: Double = 100.0
     var acceleration: Double = 0.0
-    var viewRadius: Double = 100.0
+    var viewRadius: Double = 50.0
     var dspeed: Double = 0.0
     var dangle: Double = 0.0
     var maxx: Double = maxX
@@ -27,6 +27,9 @@ class boid(maxX: Double, maxY: Double) {
     var coanglet: Double = 0.0
     var danglex: Double = 0.0
     var dangley: Double = 0.0
+    var angletotalx: Double = 0.0
+    var angletotaly: Double = 0.0
+
 
 
     fun getRawDistance(x: Double, y: Double): Double {
@@ -64,11 +67,19 @@ class boid(maxX: Double, maxY: Double) {
         return this.coanglet
     }
 
-    fun calcSepAngle (): Double {
-        if(this.getRawDistance(this.dnavx,dnavy) < this.viewRadius / 10){
-
+    fun avgangles(inputs: List<Double>): Double{
+        angletotalx = 0.0
+        angletotaly = 0.0
+        inputs.forEach {
+            angletotalx += cos(it)
+            angletotaly += sin(it)
         }
-        return 0.0
+
+        return((2* Math.PI + atan(angletotaly/angletotalx)) % (2 * Math.PI))
+    }
+
+    fun calcSepAngle (): Double {
+
     }
 
     fun log(){
