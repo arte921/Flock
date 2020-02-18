@@ -73,7 +73,7 @@ class CanvasView(context: Context): View(context) {
             nearbyBoids.clear()
 
             boids.forEach {
-                if(currentBoid.getRawDistance(it.x,it.y) < currentBoid.viewRadius && it !== currentBoid){
+                if(currentBoid.getRawDistance(it.x,it.y) < currentBoid.viewRadius &&  it !== currentBoid){
                     nearbyBoids.add(it)
                 }
             }
@@ -93,12 +93,8 @@ class CanvasView(context: Context): View(context) {
                         currentBoid.navy += 2 * currentBoid.y - it.y
                         currentBoid.repulsionamount++
                     }else{
-                        angles.add(it.angle)
-                        if(it.angle > PI){
-                            angles.add(it.angle - 2 * PI)
-                        }else{
-                            angles.add(it.angle)
-                        }
+                        currentBoid.danglex += cos(it.x)
+                        currentBoid.dangley += sin(it.x)
                         currentBoid.alignmentamount++
                     }
                 }
@@ -109,10 +105,10 @@ class CanvasView(context: Context): View(context) {
                 currentBoid.navy = currentBoid.navy/(currentBoid.attractionamount+currentBoid.repulsionamount)
 
                 navxangle = (2 * PI + atan((currentBoid.navy-currentBoid.y) / (currentBoid.navx-currentBoid.x))) % (2 * PI)
-                if(navxangle > PI) navxangle -= 2 * PI
-                alignangle = angles.average()
 
-                currentBoid.tangle =  (2 * PI + navxangle * (currentBoid.attractionamount+currentBoid.repulsionamount) + alignangle * currentBoid.alignmentamount) % (2 * PI)
+                alignangle = (2 * PI + atan(sin(currentBoid.dangley)/cos(currentBoid.danglex))) % (2 * PI)
+
+                currentBoid.tangle = atan((sin(alignangle) * currentBoid.alignmentamount + sin(navxangle) * (currentBoid.repulsionamount + currentBoid.attractionamount)) / ((cos(alignangle) * currentBoid.alignmentamount + cos(navxangle) * (currentBoid.repulsionamount + currentBoid.attractionamount))))
                 currentBoid.tspeed = currentBoid.dspeed / nearbyBoids.size
             }
 
