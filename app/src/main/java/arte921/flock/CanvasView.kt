@@ -26,7 +26,7 @@ class CanvasView(context: Context): View(context) {
     private var maxX: Double = 720.0
     private var maxY: Double = 1280.0
     private var nearbyBoids = mutableListOf<boid>()
-    private var boids = MutableList(100) { boid(maxX, maxY) }
+    private var boids = MutableList(500) { boid(maxX, maxY) }
     private var angletotalx: Double = 0.0
     private var angletotaly: Double = 0.0
     private var currentdistance: Double = 0.0
@@ -115,10 +115,10 @@ class CanvasView(context: Context): View(context) {
             currentBoid.tx = currentBoid.x + deltaT / 1000 * currentBoid.speed * cos(currentBoid.angle)
             currentBoid.ty = currentBoid.y + deltaT / 1000 * currentBoid.speed * sin(currentBoid.angle)
 
-            if(currentBoid.x >= maxX) currentBoid.tx = 0.0
-            if(currentBoid.x <= 0) currentBoid.tx = maxX
-            if(currentBoid.y >= maxY) currentBoid.ty = 0.0
-            if(currentBoid.y <= 0) currentBoid.ty = maxY
+            if(currentBoid.x > maxX) currentBoid.tx = 0.0
+            if(currentBoid.x < 0) currentBoid.tx = maxX
+            if(currentBoid.y > maxY) currentBoid.ty = 0.0
+            if(currentBoid.y < 0) currentBoid.ty = maxY
 
         }
 
