@@ -104,11 +104,11 @@ class CanvasView(context: Context): View(context) {
                 currentBoid.navx = currentBoid.navx/(currentBoid.attractionamount+currentBoid.repulsionamount)
                 currentBoid.navy = currentBoid.navy/(currentBoid.attractionamount+currentBoid.repulsionamount)
 
-                navxangle = (2 * PI + atan2((currentBoid.navy-currentBoid.y),currentBoid.navx-currentBoid.x)) % (2 * PI)
+                navxangle = (3 * PI + atan2((currentBoid.navy-currentBoid.y),currentBoid.navx-currentBoid.x)) % (2 * PI)
 
-                alignangle = (2 * PI + atan2(sin(currentBoid.dangley),cos(currentBoid.danglex))) % (2 * PI)
+                alignangle = (3 * PI + atan2(sin(currentBoid.dangley),cos(currentBoid.danglex))) % (2 * PI)
 
-                currentBoid.tangle = atan2((sin(alignangle) * currentBoid.alignmentamount + sin(navxangle) * (currentBoid.repulsionamount + currentBoid.attractionamount)),((cos(alignangle) * currentBoid.alignmentamount + cos(navxangle) * (currentBoid.repulsionamount + currentBoid.attractionamount))))
+                currentBoid.tangle = PI + atan2((sin(alignangle) * currentBoid.alignmentamount + sin(navxangle) * (currentBoid.repulsionamount + currentBoid.attractionamount)),((cos(alignangle) * currentBoid.alignmentamount + cos(navxangle) * (currentBoid.repulsionamount + currentBoid.attractionamount))))
                 currentBoid.tspeed = currentBoid.dspeed / nearbyBoids.size
             }
 
