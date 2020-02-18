@@ -76,7 +76,7 @@ class CanvasView(context: Context): View(context) {
                 currentBoid.navy = currentBoid.navy / nearbyBoids.size
 
                 currentBoid.tspeed = currentBoid.dspeed / nearbyBoids.size
-                currentBoid.tangle = (currentBoid.dangle / nearbyBoids.size * 0 + currentBoid.calcCoAngle() + currentBoid.calcSepAngle() * 0) % PI
+                currentBoid.tangle = (currentBoid.dangle / nearbyBoids.size * 0 + currentBoid.calcCoAngle() + currentBoid.calcSepAngle() * 0)
 
             }
 
