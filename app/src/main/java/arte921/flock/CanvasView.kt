@@ -92,7 +92,7 @@ class CanvasView(context: Context): View(context) {
                 currentBoid.navy = currentBoid.navy / nearbyBoids.size
 
                 currentBoid.tspeed = currentBoid.dspeed / nearbyBoids.size
-                currentBoid.tangle = avgangles(listOf(currentBoid.dangle,currentBoid.calcCoAngle(),currentBoid.calcSepAngle(),currentBoid.angle))
+                currentBoid.tangle = avgangles(listOf(currentBoid.dangle,currentBoid.calcCoAngle()*0,currentBoid.angle*10))
 
             }
 
