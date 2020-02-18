@@ -25,6 +25,8 @@ class boid(maxX: Double, maxY: Double) {
     var dnavy: Double = 0.0
     var tanglec: Double = 0.0
     var coanglet: Double = 0.0
+    var danglex: Double = 0.0
+    var dangley: Double = 0.0
 
 
     fun getRawDistance(x: Double, y: Double): Double {
@@ -88,5 +90,7 @@ class boid(maxX: Double, maxY: Double) {
         this.dnavx = 0.0
         this.dnavy = 0.0
         this.tanglec = 0.0
+        this.danglex = 0.0
+        this.dangley = 0.0
     }
 }

@@ -11,6 +11,7 @@ import java.lang.Math.PI
 import java.lang.Math.tan
 import java.util.*
 import kotlin.math.abs
+import kotlin.math.atan
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -27,6 +28,8 @@ class CanvasView(context: Context): View(context) {
     private var maxY: Double = 1280.0
     private var nearbyBoids = mutableListOf<boid>()
     private var boids = MutableList(50) { boid(maxX, maxY) }
+    private var angletotalx: Double = 0.0
+    private var angletotaly: Double = 0.0
 
 
     private val paint = Paint().apply {
@@ -49,6 +52,17 @@ class CanvasView(context: Context): View(context) {
         extraCanvas.drawColor(skyColor)
     }
 
+    fun avgangles(inputs: List<Double>): Double{
+        angletotalx = 0.0
+        angletotaly = 0.0
+        inputs.forEach {
+            angletotalx += cos(it)
+            angletotaly += sin(it)
+        }
+
+        return((2* PI + atan(angletotaly/angletotalx)) % (2 * PI))
+    }
+
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         canvas.drawBitmap(extraBitmap, 0f, 0f, null)
@@ -65,18 +79,20 @@ class CanvasView(context: Context): View(context) {
             if(nearbyBoids.size > 0){
                 nearbyBoids.forEach {
                     currentBoid.dspeed += it.speed
-                    currentBoid.dangle += it.angle
+                    currentBoid.danglex += cos(it.angle)
+                    currentBoid.dangley += sin(it.angle)
 
                     currentBoid.navx += it.x
                     currentBoid.navy += it.y
 
                 }
+                currentBoid.dangle = atan(currentBoid.dangley/currentBoid.danglex)
 
                 currentBoid.navx = currentBoid.navx / nearbyBoids.size
                 currentBoid.navy = currentBoid.navy / nearbyBoids.size
 
                 currentBoid.tspeed = currentBoid.dspeed / nearbyBoids.size
-                currentBoid.tangle = (currentBoid.dangle / nearbyBoids.size * 0 + currentBoid.calcCoAngle() + currentBoid.calcSepAngle() * 0)
+                currentBoid.tangle = avgangles(listOf(currentBoid.dangle,currentBoid.calcCoAngle(),currentBoid.calcSepAngle(),currentBoid.angle))
 
             }
 
