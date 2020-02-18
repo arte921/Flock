@@ -93,7 +93,7 @@ class CanvasView(context: Context): View(context) {
 
                 currentBoid.tspeed = currentBoid.dspeed / nearbyBoids.size
                 currentBoid.initdeltas()
-                currentBoid.tangle = avgangles(listOf(currentBoid.calcDivAngle()))   //currentBoid.dangle,currentBoid.calcCoAngle()
+                currentBoid.tangle = avgangles(listOf(currentBoid.dangle,currentBoid.calcCoAngle()))   //currentBoid.calcDivAngle(),
 
             }
 
