@@ -26,7 +26,7 @@ class CanvasView(context: Context): View(context) {
     private var maxX: Double = 720.0
     private var maxY: Double = 1280.0
     private var nearbyBoids = mutableListOf<boid>()
-    private var boids = MutableList(500) { boid(maxX, maxY) }
+    private var boids = MutableList(50) { boid(maxX, maxY) }
     private var angletotalx: Double = 0.0
     private var angletotaly: Double = 0.0
     private var currentdistance: Double = 0.0
@@ -62,7 +62,7 @@ class CanvasView(context: Context): View(context) {
             angletotaly += sin(it)
         }
 
-        return((2* PI + atan(angletotaly/angletotalx)) % (2 * PI))
+        return((2 * PI + atan(angletotaly/angletotalx)) % (2 * PI))
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -84,11 +84,11 @@ class CanvasView(context: Context): View(context) {
                     currentdistance = currentBoid.getRawDistance(it.x,it.y)
                     currentBoid.dspeed += it.speed
 
-                    if(currentdistance > currentBoid.viewRadius/2){
+                    if(currentdistance > currentBoid.viewRadius/3){
                         currentBoid.navx += it.x
                         currentBoid.navy += it.y
                         currentBoid.attractionamount++
-                    }else if(currentdistance < currentBoid.viewRadius/5){
+                    }else if(currentdistance < currentBoid.viewRadius/8){
                         currentBoid.navx += 2 * currentBoid.x - it.x
                         currentBoid.navy += 2 * currentBoid.y - it.y
                         currentBoid.repulsionamount++
@@ -104,21 +104,26 @@ class CanvasView(context: Context): View(context) {
                 currentBoid.navx = currentBoid.navx/(currentBoid.attractionamount+currentBoid.repulsionamount)
                 currentBoid.navy = currentBoid.navy/(currentBoid.attractionamount+currentBoid.repulsionamount)
 
-                navxangle = (2 * PI + atan((currentBoid.navy-currentBoid.y) / (currentBoid.navx-currentBoid.x))) % (2 * PI)
+                navxangle = (2 * PI + atan2((currentBoid.navy-currentBoid.y),currentBoid.navx-currentBoid.x)) % (2 * PI)
 
-                alignangle = (2 * PI + atan(sin(currentBoid.dangley)/cos(currentBoid.danglex))) % (2 * PI)
+                alignangle = (2 * PI + atan2(sin(currentBoid.dangley),cos(currentBoid.danglex))) % (2 * PI)
 
-                currentBoid.tangle = atan((sin(alignangle) * currentBoid.alignmentamount + sin(navxangle) * (currentBoid.repulsionamount + currentBoid.attractionamount)) / ((cos(alignangle) * currentBoid.alignmentamount + cos(navxangle) * (currentBoid.repulsionamount + currentBoid.attractionamount))))
+                currentBoid.tangle = atan2((sin(alignangle) * currentBoid.alignmentamount + sin(navxangle) * (currentBoid.repulsionamount + currentBoid.attractionamount)),((cos(alignangle) * currentBoid.alignmentamount + cos(navxangle) * (currentBoid.repulsionamount + currentBoid.attractionamount))))
                 currentBoid.tspeed = currentBoid.dspeed / nearbyBoids.size
             }
 
             currentBoid.tx = currentBoid.x + deltaT / 1000 * currentBoid.speed * cos(currentBoid.angle)
             currentBoid.ty = currentBoid.y + deltaT / 1000 * currentBoid.speed * sin(currentBoid.angle)
-
+/*
             if(currentBoid.x > maxX) currentBoid.tx = 0.0
             if(currentBoid.x < 0) currentBoid.tx = maxX
             if(currentBoid.y > maxY) currentBoid.ty = 0.0
             if(currentBoid.y < 0) currentBoid.ty = maxY
+*/
+            if(currentBoid.x > maxX - currentBoid.viewRadius) currentBoid.tangle = PI
+            if(currentBoid.x < currentBoid.viewRadius) currentBoid.tangle = 0.0
+            if(currentBoid.y > maxY) currentBoid.tangle = 1.5 * PI
+            if(currentBoid.y < 0) currentBoid.tangle = 0.5 * PI
 
         }
 
