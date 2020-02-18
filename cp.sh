@@ -1,3 +1,3 @@
 git stage *
-git commit -m  'commit + pull script, $1'
+git commit -m $1
 git push
