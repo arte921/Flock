@@ -9,8 +9,7 @@ class boid(maxX: Double, maxY: Double) {
     var y: Double = random() * maxY
     var angle: Double = random() * 2 * PI
     var speed: Double = 100.0
-    var acceleration: Double = 0.0
-    var viewRadius: Double = 100.0
+    var viewRadius: Double = 200.0
     var dspeed: Double = 0.0
     var dangle: Double = 0.0
     var maxx: Double = maxX
@@ -24,12 +23,8 @@ class boid(maxX: Double, maxY: Double) {
     var dnavx: Double = 0.0
     var dnavy: Double = 0.0
     var tanglec: Double = 0.0
-    var coanglet: Double = 0.0
     var danglex: Double = 0.0
     var dangley: Double = 0.0
-    var prediv: Double = 0.0
-    var closenessFactor: Double = 0.0
-    var adangle: Double = 0.0
     var repulsionamount: Int = 0
     var alignmentamount: Int = 0
     var attractionamount: Int = 0
@@ -49,46 +44,6 @@ class boid(maxX: Double, maxY: Double) {
         return if(d !== null){d}else{viewRadius + 1}
     }
 
-    fun initdeltas() {
-        this.dnavx = this.navx - this.x
-        this.dnavy = this.navy - this.y
-    }
-
-    fun calcCoAngle (): Double {
-        if(this.dnavx > 0.0 && this.dnavy > 0.0){
-            this.coanglet = PI - atan(dnavx/dnavy)
-        }else if(this.dnavx < 0.0 && this.dnavy > 0.0){
-            this.coanglet = PI - atan(dnavx/dnavy)
-        }else if(this.dnavx > 0.0 && this.dnavy < 0.0){
-            this.coanglet = abs(atan(dnavx/dnavy))
-        }else if(this.dnavx < 0.0 && this.dnavy < 0.0){
-            this.coanglet = 2 * PI - atan(dnavx/dnavy)
-        }
-        if(this.getRawDistance(this.dnavx,dnavy) < this.viewRadius / 10){
-
-        }
-
-        this.coanglet = this.coanglet - 0.2 * PI + getRawDistance(navx,navy)/this.viewRadius * PI * 0.4
-        return this.coanglet
-    }
-
-    fun calcDivAngle (): Double {
-        if(this.dnavx > 0.0 && this.dnavy > 0.0){
-            this.coanglet = PI - atan(dnavx/dnavy)
-        }else if(this.dnavx < 0.0 && this.dnavy > 0.0){
-            this.coanglet = PI - atan(dnavx/dnavy)
-        }else if(this.dnavx > 0.0 && this.dnavy < 0.0){
-            this.coanglet = abs(atan(dnavx/dnavy))
-        }else if(this.dnavx < 0.0 && this.dnavy < 0.0){
-            this.coanglet = 2 * PI - atan(dnavx/dnavy)
-        }
-        if(this.getRawDistance(this.dnavx,dnavy) < this.viewRadius / 10){
-
-        }
-
-        this.coanglet = this.coanglet - 0.2 * PI + getRawDistance(navx,navy)/this.viewRadius * PI * 0.4
-        return this.coanglet
-    }
 
     fun log(){
         Log.i("boid.log",this.x.toString() + "," +  this.x.toString() + ", Angle: " +  this.angle.toString() + ", Speed: " +  this.speed.toString())

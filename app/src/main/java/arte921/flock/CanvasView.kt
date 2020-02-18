@@ -26,7 +26,7 @@ class CanvasView(context: Context): View(context) {
     private var maxX: Double = 720.0
     private var maxY: Double = 1280.0
     private var nearbyBoids = mutableListOf<boid>()
-    private var boids = MutableList(50) { boid(maxX, maxY) }
+    private var boids = MutableList(100) { boid(maxX, maxY) }
     private var angletotalx: Double = 0.0
     private var angletotaly: Double = 0.0
     private var currentdistance: Double = 0.0
@@ -79,14 +79,14 @@ class CanvasView(context: Context): View(context) {
 
             if(nearbyBoids.size > 0){
                 nearbyBoids.forEach {
-                    currentdistance = currentBoid.getDistance(it.x,it.y)
+                    currentdistance = currentBoid.getRawDistance(it.x,it.y)
                     currentBoid.dspeed += it.speed
 
-                    if(currentdistance > 100){
+                    if(currentdistance > currentBoid.viewRadius/2){
                         currentBoid.navx += it.x
                         currentBoid.navy += it.y
                         currentBoid.attractionamount++
-                    }else if(currentdistance < 30){
+                    }else if(currentdistance < currentBoid.viewRadius/5){
                         currentBoid.navx += 2 * currentBoid.x - it.x
                         currentBoid.navy += 2 * currentBoid.y - it.y
                         currentBoid.repulsionamount++
@@ -98,32 +98,34 @@ class CanvasView(context: Context): View(context) {
 
                 }
 
-                navxangle = atan((currentBoid.navy/(currentBoid.attractionamount+currentBoid.repulsionamount)-currentBoid.y) / (currentBoid.navx/(currentBoid.attractionamount+currentBoid.repulsionamount)-currentBoid.x))
-                alignangle = atan(currentBoid.danglex/currentBoid.dangley)
+                currentBoid.navx = currentBoid.navx/(currentBoid.attractionamount+currentBoid.repulsionamount)
+                currentBoid.navy = currentBoid.navy/(currentBoid.attractionamount+currentBoid.repulsionamount)
+
+                navxangle = atan((currentBoid.navy-currentBoid.y) / (currentBoid.navx-currentBoid.x))
+                alignangle = atan(currentBoid.dangley/currentBoid.danglex)
 
 
-                currentBoid.tangle =  atan(((sin(navxangle) + sin(alignangle)) * 2/3 )/((cos(navxangle) + cos(alignangle)) * 1/3 ))
+                currentBoid.tangle =  atan(((sin(navxangle) * (currentBoid.attractionamount + currentBoid.repulsionamount * currentBoid.alignmentamount) + sin(alignangle))) / ((cos(navxangle) * (currentBoid.attractionamount + currentBoid.repulsionamount) + cos(alignangle) * currentBoid.alignmentamount)))
 
                 currentBoid.tspeed = currentBoid.dspeed / nearbyBoids.size
-                currentBoid.initdeltas()
             }
 
             currentBoid.tx = currentBoid.x + deltaT / 1000 * currentBoid.speed * cos(currentBoid.angle)
             currentBoid.ty = currentBoid.y + deltaT / 1000 * currentBoid.speed * sin(currentBoid.angle)
 
-            if(currentBoid.x > maxX) currentBoid.tx = 0.0
-            if(currentBoid.x < 0) currentBoid.tx = maxX
-            if(currentBoid.y > maxY) currentBoid.ty = 0.0
-            if(currentBoid.y < 0) currentBoid.ty = maxY
+            if(currentBoid.tx >= maxX) currentBoid.tx = 0.0
+            if(currentBoid.tx <= 0) currentBoid.tx = maxX
+            if(currentBoid.ty >= maxY) currentBoid.ty = 0.0
+            if(currentBoid.ty <= 0) currentBoid.ty = maxY
 
+        }
 
-            currentBoid.reset()
-            currentBoid.apply()
-            currentBoid.log()
-
-            canvas.drawPoint((currentBoid.x % maxX).toFloat(),(maxY - currentBoid.y % maxY).toFloat(),paint)
-            canvas.drawPoint((10.0 + random()*10.0).toFloat(), 10F,paint)
-
+        boids.forEach {
+            it.apply()
+            it.reset()
+            it.log()
+            canvas.drawPoint((it.x % maxX).toFloat(),(maxY - it.y % maxY).toFloat(),paint)
+            canvas.drawPoint((10.0 + random()*10.0).toFloat(), (10.0 + random()*10.0).toFloat(),paint)
         }
 
 
