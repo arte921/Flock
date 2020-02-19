@@ -79,6 +79,7 @@ class CanvasView(context: Context): View(context) {
             }
 
             if(nearbyBoids.size > 0){
+                currentBoid.reset()
                 angles.clear()
                 nearbyBoids.forEach {
                     currentdistance = currentBoid.getRawDistance(it.x,it.y)
@@ -94,7 +95,9 @@ class CanvasView(context: Context): View(context) {
                         currentBoid.repulsionamount++
                     }else{
 
-                        currentBoid.dangle += 0.1 * it.angle - currentBoid.angle
+                        currentBoid.dangle += 0.1 * (it.angle - currentBoid.angle)
+                        currentBoid.dnavx += cos(it.angle)
+                        currentBoid.dnavy += sin(it.angle)
 
                         currentBoid.alignmentamount++
                     }
@@ -109,8 +112,9 @@ class CanvasView(context: Context): View(context) {
 
                 alignangle = (2 * PI + atan2(sin(currentBoid.dangley),cos(currentBoid.danglex))) % (2 * PI)
 
-                currentBoid.tangle = PI + atan2((sin(alignangle) * currentBoid.alignmentamount + sin(navxangle) * (currentBoid.repulsionamount + currentBoid.attractionamount)),((cos(alignangle) * currentBoid.alignmentamount + cos(navxangle) * (currentBoid.repulsionamount + currentBoid.attractionamount))))
-                currentBoid.tangle = currentBoid.dangle
+                //currentBoid.tangle = PI + atan2((sin(alignangle) * currentBoid.alignmentamount + sin(navxangle) * (currentBoid.repulsionamount + currentBoid.attractionamount)),((cos(alignangle) * currentBoid.alignmentamount + cos(navxangle) * (currentBoid.repulsionamount + currentBoid.attractionamount))))
+                //currentBoid.tangle = (2 * PI + currentBoid.dangle) % (2 * PI)
+                currentBoid.tangle = atan2(currentBoid.navy,currentBoid.navx)
                 currentBoid.tspeed = currentBoid.dspeed / nearbyBoids.size
             }
 
@@ -131,7 +135,6 @@ class CanvasView(context: Context): View(context) {
 
         boids.forEach {
             it.apply()
-            it.reset()
             it.log()
             canvas.drawPoint((it.x % maxX).toFloat(),(maxY - it.y % maxY).toFloat(),paint)
             canvas.drawPoint((10.0 + random()*10.0).toFloat(), (10.0 + random()*10.0).toFloat(),paint)
