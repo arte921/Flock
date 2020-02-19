@@ -7,9 +7,9 @@ import kotlin.math.*
 class boid(maxX: Double, maxY: Double) {
     var x: Double = random() * maxX
     var y: Double = random() * maxY
-    var angle: Double = random() * 2 * PI
+    var angle: Double = 0.5 * PI + random() * 0.5 * PI
     var speed: Double = 150.0
-    var viewRadius: Double = 50.0
+    var viewRadius: Double = 100.0
     var dspeed: Double = 0.0
     var dangle: Double = 0.0
     var maxx: Double = maxX
@@ -28,6 +28,7 @@ class boid(maxX: Double, maxY: Double) {
     var repulsionamount: Int = 0
     var alignmentamount: Int = 0
     var attractionamount: Int = 0
+    //var am: Double = 0.0
 
 
     fun getRawDistance(x: Double, y: Double): Double {

@@ -93,8 +93,9 @@ class CanvasView(context: Context): View(context) {
                         currentBoid.navy += 2 * currentBoid.y - it.y
                         currentBoid.repulsionamount++
                     }else{
-                        currentBoid.danglex += cos(it.x)
-                        currentBoid.dangley += sin(it.x)
+
+                        currentBoid.dangle += 0.1 * it.angle - currentBoid.angle
+
                         currentBoid.alignmentamount++
                     }
                 }
@@ -106,25 +107,26 @@ class CanvasView(context: Context): View(context) {
 
                 navxangle = (3 * PI + atan2((currentBoid.navy-currentBoid.y),currentBoid.navx-currentBoid.x)) % (2 * PI)
 
-                alignangle = (3 * PI + atan2(sin(currentBoid.dangley),cos(currentBoid.danglex))) % (2 * PI)
+                alignangle = (2 * PI + atan2(sin(currentBoid.dangley),cos(currentBoid.danglex))) % (2 * PI)
 
                 currentBoid.tangle = PI + atan2((sin(alignangle) * currentBoid.alignmentamount + sin(navxangle) * (currentBoid.repulsionamount + currentBoid.attractionamount)),((cos(alignangle) * currentBoid.alignmentamount + cos(navxangle) * (currentBoid.repulsionamount + currentBoid.attractionamount))))
+                currentBoid.tangle = currentBoid.dangle
                 currentBoid.tspeed = currentBoid.dspeed / nearbyBoids.size
             }
 
             currentBoid.tx = currentBoid.x + deltaT / 1000 * currentBoid.speed * cos(currentBoid.angle)
             currentBoid.ty = currentBoid.y + deltaT / 1000 * currentBoid.speed * sin(currentBoid.angle)
-/*
+
             if(currentBoid.x > maxX) currentBoid.tx = 0.0
             if(currentBoid.x < 0) currentBoid.tx = maxX
             if(currentBoid.y > maxY) currentBoid.ty = 0.0
             if(currentBoid.y < 0) currentBoid.ty = maxY
-*/
+/*
             if(currentBoid.x > maxX - currentBoid.viewRadius) currentBoid.tangle = PI
             if(currentBoid.x < currentBoid.viewRadius) currentBoid.tangle = 0.0
             if(currentBoid.y > maxY) currentBoid.tangle = 1.5 * PI
             if(currentBoid.y < 0) currentBoid.tangle = 0.5 * PI
-
+*/
         }
 
         boids.forEach {
