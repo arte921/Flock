@@ -52,6 +52,9 @@ class CanvasView(context: Context): View(context) {
         extraBitmap = Bitmap.createBitmap(width,height,Bitmap.Config.ARGB_8888)
         extraCanvas = Canvas(extraBitmap)
         extraCanvas.drawColor(skyColor)
+
+        maxX = width.toDouble()
+        maxY = height.toDouble()
     }
 
     fun avgangles(inputs: List<Double>): Double{
